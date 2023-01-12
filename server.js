@@ -6,6 +6,8 @@ import data from "./data.js"
 import dotenv from 'dotenv'
 import mongoose from "mongoose";
 
+import path from 'path';
+
 import productRouter from './routes/productRoutes.js';
 import seedRouter from "./routes/seedRoutes.js";
 import userRouter from "./routes/userRoutes.js";
@@ -34,11 +36,18 @@ app.get('/api/keys/paypal', (req, res) => {
   res.send(process.env.PAYPAL_CLIENT_ID || 'sb');
 });
 
+const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, 'frontend/build')));
+app.get('*', (req,res) => {
+  res.sendFile(path.join(__dirname, '/frontend/build/index.html'));
+})
+
+
 app.use((err, req, res, next) => {
   res.status(500).send({ message: err.message });
 });
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log("Server is Running on port: http://localhost:"+port);
 });

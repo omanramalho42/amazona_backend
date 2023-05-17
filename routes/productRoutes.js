@@ -1,6 +1,7 @@
 import express from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import Product from '../models/ProductModel.js';
+import { isAuth } from '../utils.js';
 
 const productRouter = express.Router();
 
@@ -94,18 +95,136 @@ productRouter.get('/categories', expressAsyncHandler(async (req, res, next) => {
   res.send(categories);
 }));
 
-productRouter.get("/slug/:slug", async (req, res, next) => {
-  const product = await Product.findOne(
-    { slug: req.params.slug }
-  );
+productRouter.get("/listproducts", isAuth, expressAsyncHandler(async (req, res, next) => {
+  const products = await Product.find({});
+
+  if(products) {
+    res.status(200).send({ products });
+  } else {
+    res.status(404).send({ message: 'Nenhum produto encontrado' });
+  }
+}));
+
+productRouter.get("/slug/:slug", isAuth, expressAsyncHandler( async (req, res, next) => {
+  const product = await Product.findOne({
+    slug: req.params.slug
+  });
   
   if(product) {
     res.status(200).send(product);
   } else {
     res.status(404).send({ message: 'Produto não encontrado' });
   }
+}));
 
-});
+productRouter.put("/slug/:id", isAuth, expressAsyncHandler(async (req, res, next) => {
+  const product = await Product.findById(req.params.id);
+  
+  if(product) {
+    product.name        = req.body.name        || product.name;
+    product.slug        = req.body.slug        || product.slug;
+    product.price       = req.body.price       || product.price;
+    product.rating      = req.body.rating      || product.rating;
+    product.brand       = req.body.brand       || product.brand;
+    product.category    = req.body.category    || product.category;
+    product.description = req.body.description || product.description;
+    
+    const existSlug = await Product.findOne({ slug: req.body.slug || product.slug });
+
+    if(existSlug?.slug === req.body.slug || !existSlug) {
+      
+      const updatedProduct = await product.save();
+
+      res.send({
+        message: "Sucesso ao editar o produto",
+        product:{
+        _id: updatedProduct._id,
+        name: updatedProduct.name,
+        slug: updatedProduct.slug,
+        price: updatedProduct.price,
+        rating: updatedProduct.rating,
+        brand: updatedProduct.brand,
+        category: updatedProduct.category,
+        description: updatedProduct.description
+      }});
+      
+    } else {
+      res.status(404).send({ 
+        message: "Este slug já existe" 
+      });
+    }
+
+  } else {
+    res.status(404).send({ 
+      message: 'Produto não encontrado!'
+    });
+  }
+
+}));
+
+productRouter.delete("/slug/:id", isAuth, expressAsyncHandler( async (req, res, next) => {
+  const product = await Product.findById(req.params.id);
+  
+  console.log("deletando produto", req.params);
+
+  if(product) {
+    product.deleteOne({ slug: product.slug });
+    
+    res.status(201).send({
+      message: 'Produto deletado com sucesso'
+    });
+  } else {
+    res.status(400).send({
+      message: 'Produto não encontrado'
+    });
+  }
+
+}));
+
+productRouter.post("/slug/create", isAuth, expressAsyncHandler( async (req, res, next) => {
+  const {
+    name,
+    slug,
+    brand,
+    price,
+    rating,
+    numReviews,
+    category,
+    description,
+    countInStock,
+    image
+  } = req.body;
+
+  const existSlug = await Product.findOne({ slug: req.body.slug || slug });
+
+  if(existSlug) {
+    res.status(401).send({
+      message: "Este slug já está sendo usado em outro produto"
+    });
+  } else {
+    const newProduct = new Product({
+      name,
+      slug,
+      price,
+      rating,
+      brand,
+      numReviews,
+      category,
+      description,
+      countInStock,
+      image
+    });
+    
+    const product = await newProduct.save();
+
+    res.status(201).send({
+      message: "Sucesso ao criar novo produto",
+      product
+    });
+  }
+
+  res.status(201);
+}));
 
 productRouter.get("/:id", async (req, res, next) => {
   const product = await Product.findById(

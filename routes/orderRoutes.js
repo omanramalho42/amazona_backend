@@ -18,6 +18,16 @@ orderRouter.get(
   })
 );
 
+orderRouter.get("/listorders", isAuth, expressAsyncHandler(async (req, res, next) => {
+  const orders = await Order.find({});
+
+  if(orders) {
+    res.status(200).send({ orders });
+  } else {
+    res.status(404).send({ message: 'Nenhuma ordem encontrada' });
+  }
+}));
+
 orderRouter.get(
   "/:id", 
   isAuth, 

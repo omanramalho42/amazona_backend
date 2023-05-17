@@ -76,4 +76,19 @@ userRouter.put('/profile', isAuth, expressAsyncHandler( async (req, res, next) =
   });
 }));
 
+userRouter.get('/listusers', isAuth, expressAsyncHandler( async (req, res, next) => {
+  const users = await User.find({});
+
+  if(users) {
+    res.status(201).send({
+      users,
+    });
+  } else {
+    res.status(404).send({ message: 'Usuários não encontrados! '});
+  }
+
+}));
+
+
+
 export default userRouter;

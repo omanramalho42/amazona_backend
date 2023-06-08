@@ -15,14 +15,18 @@ import orderRouter from './routes/orderRoutes.js';
 
 dotenv.config();
 
-const app = express();
-app.use(cors());
 
 mongoose.set('strictQuery', false);
 mongoose.connect(process.env.MONGODB_URI)
 .then(() => {
   console.log("connected to mongoose db");
 }).catch(error => console.log(error));
+
+const app = express();
+// app.use(cors());
+app.use(cors({
+  origin: 'https://amazona-frontend-git-main-omanramalho42.vercel.app'
+}));
 
 // app.use(function (req,res,next) {
 //   res.header("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS, POST, PUT, DELETE")

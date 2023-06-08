@@ -97,6 +97,8 @@ productRouter.get('/categories', expressAsyncHandler(async (req, res, next) => {
 
 productRouter.get("/listproducts", isAuth, expressAsyncHandler(async (req, res, next) => {
   const products = await Product.find({});
+  
+  // const { ...products } = await bussiness.getAllProductsList();
 
   if(products) {
     res.status(200).send({ products });
@@ -164,8 +166,6 @@ productRouter.put("/slug/:id", isAuth, expressAsyncHandler(async (req, res, next
 
 productRouter.delete("/slug/:id", isAuth, expressAsyncHandler( async (req, res, next) => {
   const product = await Product.findById(req.params.id);
-  
-  console.log("deletando produto", req.params);
 
   if(product) {
     product.deleteOne({ slug: product.slug });

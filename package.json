@@ -5,6 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "npm run start nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Oman",
@@ -19,5 +20,8 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.8.3",
     "nodemon": "^2.0.20"
+  },
+  "optionalDependencies": {
+    "fsevents": "^2.3.2"
   }
 }

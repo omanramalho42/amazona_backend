@@ -16,11 +16,12 @@ import orderRouter from './routes/orderRoutes.js';
 const app = express();
 // app.use(cors());
 app.use(cors({
-  origin: 'https://amazona-frontend-git-main-omanramalho42.vercel.app',
+  origin: '*',
   headers: ["Content-Type"],
   credentials: true,
 }));
 app.options('*', cors())
+
 dotenv.config();
 
 mongoose.set('strictQuery', false);

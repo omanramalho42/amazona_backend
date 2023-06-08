@@ -13,8 +13,15 @@ import seedRouter from "./routes/seedRoutes.js";
 import userRouter from "./routes/userRoutes.js";
 import orderRouter from './routes/orderRoutes.js';
 
+const app = express();
+// app.use(cors());
+app.use(cors({
+  origin: 'https://amazona-frontend-git-main-omanramalho42.vercel.app',
+  headers: ["Content-Type"],
+  credentials: true,
+}));
+app.options('*', cors())
 dotenv.config();
-
 
 mongoose.set('strictQuery', false);
 mongoose.connect(process.env.MONGODB_URI)
@@ -22,11 +29,6 @@ mongoose.connect(process.env.MONGODB_URI)
   console.log("connected to mongoose db");
 }).catch(error => console.log(error));
 
-const app = express();
-// app.use(cors());
-app.use(cors({
-  origin: 'https://amazona-frontend-git-main-omanramalho42.vercel.app'
-}));
 
 // app.use(function (req,res,next) {
 //   res.header("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS, POST, PUT, DELETE")

@@ -7,11 +7,6 @@ const productRouter = express.Router();
 
 productRouter.get('/', async (req, res, next) => {
   const products = await Product.find();
-
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-
   res.status(200).send(products);
 });
 
@@ -97,12 +92,6 @@ productRouter.get(
 
 productRouter.get('/categories', expressAsyncHandler(async (req, res, next) => {
   const categories = await Product.find().distinct('category');
-    
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-
-  
   res.status(200).send(categories);
 }));
 

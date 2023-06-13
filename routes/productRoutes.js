@@ -5,7 +5,13 @@ import { isAuth } from '../utils.js';
 
 const productRouter = express.Router();
 
-productRouter.get('/', async (req, res, next) => {
+// Configuração do CORS para uma rota específica permitindo todos os domínios
+const corsOptions = {
+  origin: '*', // Permite todos os domínios
+  optionsSuccessStatus: 200 // Algumas versões mais antigas do CORS requerem esse campo
+};
+
+productRouter.get('/', cors(corsOptions), async (req, res, next) => {
   const products = await Product.find();
   res.status(200).send(products);
 });
@@ -90,7 +96,7 @@ productRouter.get(
   })
 );
 
-productRouter.get('/categories', expressAsyncHandler(async (req, res, next) => {
+productRouter.get('/categories', cors(corsOptions), expressAsyncHandler(async (req, res, next) => {
   const categories = await Product.find().distinct('category');
   res.status(200).send(categories);
 }));

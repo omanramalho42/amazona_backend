@@ -7,7 +7,7 @@ const productRouter = express.Router();
 
 productRouter.get('/', async (req, res, next) => {
   const products = await Product.find();
-  res.send(products);
+  res.status(200).send(products);
 });
 
 const PAGE_SIZE = 3;
@@ -92,7 +92,7 @@ productRouter.get(
 
 productRouter.get('/categories', expressAsyncHandler(async (req, res, next) => {
   const categories = await Product.find().distinct('category');
-  res.send(categories);
+  res.status(200).send(categories);
 }));
 
 productRouter.get("/listproducts", isAuth, expressAsyncHandler(async (req, res, next) => {
@@ -238,6 +238,5 @@ productRouter.get("/:id", async (req, res, next) => {
   }
 
 });
-
 
 export default productRouter;

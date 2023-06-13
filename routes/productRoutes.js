@@ -5,14 +5,13 @@ import { isAuth } from '../utils.js';
 
 const productRouter = express.Router();
 
-// Configuração do CORS para uma rota específica permitindo todos os domínios
-const corsOptions = {
-  origin: '*', // Permite todos os domínios
-  optionsSuccessStatus: 200 // Algumas versões mais antigas do CORS requerem esse campo
-};
-
-productRouter.get('/', cors(corsOptions), async (req, res, next) => {
+productRouter.get('/', async (req, res, next) => {
   const products = await Product.find();
+
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+
   res.status(200).send(products);
 });
 
@@ -96,8 +95,14 @@ productRouter.get(
   })
 );
 
-productRouter.get('/categories', cors(corsOptions), expressAsyncHandler(async (req, res, next) => {
+productRouter.get('/categories', expressAsyncHandler(async (req, res, next) => {
   const categories = await Product.find().distinct('category');
+    
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+
+  
   res.status(200).send(categories);
 }));
 

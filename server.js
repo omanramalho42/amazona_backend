@@ -1,9 +1,9 @@
-import express from "express"
-import cors from 'cors'
+import express from "express";
+import cors from 'cors';
 
-import data from "./data.js"
+import data from "./data.js";
 
-import dotenv from 'dotenv'
+import dotenv from 'dotenv';
 import mongoose from "mongoose";
 
 import path from 'path';

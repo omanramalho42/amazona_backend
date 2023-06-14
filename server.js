@@ -23,7 +23,6 @@ mongoose.connect(process.env.MONGODB_URI)
   console.log("connected to mongoose db");
 }).catch(error => console.log(error));
 
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
